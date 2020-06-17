@@ -232,7 +232,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   /// This is just exposed for testing. It shouldn't be used by anyone depending
   /// on the plugin.
   @visibleForTesting
-  int get textureId => _textureId;
+  int get textureId => _textureId ?? 0;
 
   bool get isDispose => _isDisposed;
 
