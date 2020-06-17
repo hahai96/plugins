@@ -538,7 +538,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
     super.initState();
 
     if (widget.controller != null && !widget.controller.isDispose) {
-      _textureId = widget.controller.textureId;
+      _textureId = widget.controller?.textureId ?? 0;
       // Need to listen for initialization events since the actual texture ID
       // becomes available after asynchronous initialization finishes.
       widget.controller.addListener(_listener);
