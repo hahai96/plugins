@@ -169,7 +169,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   /// null. The [package] argument must be non-null when the asset comes from a
   /// package and null otherwise.
   VideoPlayerController.asset(this.dataSource,
-      {this.package, this.closedCaptionFile})
+      {this.package, this.closedCaptionFile, this.onCompleted})
       : dataSourceType = DataSourceType.asset,
         formatHint = null,
         super(VideoPlayerValue(duration: null));
@@ -182,7 +182,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   /// **Android only**: The [formatHint] option allows the caller to override
   /// the video format detection code.
   VideoPlayerController.network(this.dataSource,
-      {this.formatHint, this.closedCaptionFile})
+      {this.formatHint, this.closedCaptionFile, this.onCompleted})
       : dataSourceType = DataSourceType.network,
         package = null,
         super(VideoPlayerValue(duration: null));
@@ -191,7 +191,8 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   ///
   /// This will load the file from the file-URI given by:
   /// `'file://${file.path}'`.
-  VideoPlayerController.file(File file, {this.closedCaptionFile})
+  VideoPlayerController.file(File file,
+      {this.closedCaptionFile, this.onCompleted})
       : dataSource = 'file://${file.path}',
         dataSourceType = DataSourceType.file,
         package = null,
@@ -221,6 +222,8 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
   /// This future will be awaited and the file will be loaded when
   /// [initialize()] is called.
   final Future<ClosedCaptionFile> closedCaptionFile;
+
+  final Function onCompleted;
 
   ClosedCaptionFile _closedCaptionFile;
   Timer _timer;
@@ -287,6 +290,10 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
           _applyPlayPause();
           break;
         case VideoEventType.completed:
+          if (onCompleted != null) {
+            onCompleted();
+          }
+          
           value = value.copyWith(isPlaying: false, position: value.duration);
           _timer?.cancel();
           break;
